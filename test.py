@@ -15,7 +15,11 @@ df = df.dropna(how="all")
 
 st.title("Welcome to my non-real engineering job application stats website!")
 
-st.header("Jobs applied for: " + str(len(df)))
+col1, col2 = st.columns(2)
+
+with col2:
+    st.header("Applications")
+    st.text("Jobs applied for: " + str(len(df)))
 
 rejections = 0
 tempDf = df.loc[((df["Response?"] == "Declined"))]
@@ -56,8 +60,11 @@ fig1, ax1 = plt.subplots()
 ax1.pie(uniqueCounts, shadow=True)
 ax1.axis("equal")
 ax1.legend(labels=uniqueTypes)
-st.pyplot(fig1)
+with col1:
+    st.pyplot(fig1)
 #
+
+col3, col4 = st.columns(2)
 
 #Make Pie chart of Rejected, Pending, Offer
 offers = 0
@@ -79,7 +86,8 @@ for x in range(len(labels)):
 ax1.pie(counts, shadow=True)
 ax1.axis("equal")
 ax1.legend(labels=labels)
-st.pyplot(fig2)
+with col3:
+    st.pyplot(fig2)
 #
 
 #Employer Count
@@ -92,16 +100,20 @@ for ind in df.index:
 temp = sorted(employerCount, key=employerCount.get, reverse=True)
 temp = temp[0:10]
 
-st.header("Most applications to one company: " + str(employerCount[temp[0]]))
+with col2:
+    st.text("Most applications to one company: " + str(employerCount[temp[0]]))
 
 #Unique Employers
 uniqueEmployers = df["Company"].unique()
-st.header("Unique companies applied to: " + str(len(uniqueEmployers)))
-
-st.header("Cover Letters sent: " + str(coverLetters))
-st.header("Times ghosted (Employer didn't respond with rejection email): " + str(ghosts))
-st.header("Times rejected: " + str(rejections))
-st.header("Total Non-offers: " + str(rejections + ghosts))
+with col2:
+    st.text("Unique companies applied to: " + str(len(uniqueEmployers)))
+    st.text("Cover Letters sent: " + str(coverLetters))
+    
+with col4:
+    st.header("Results")
+    st.text("Times ghosted (ie no rejection email): " + str(ghosts))
+    st.text("Times rejected: " + str(rejections))
+    st.text("Total Non-offers: " + str(rejections + ghosts))
 
 #Do not commit me not commented out!
 #st.dataframe(df)
