@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import os
+import matplotlib.pyplot as plt
 from streamlit_gsheets import GSheetsConnection
 
 conn = st.connection("gsheets", type=GSheetsConnection)
@@ -13,9 +13,9 @@ df = conn.read(
 #removes bad
 df = df.dropna(how="all")
 
-st.text("Welcome to my non-real job application stats website!")
+st.text("Welcome to my non-real engineering job application stats website!")
 
-st.text("Applications sent: " + str(len(df)))
+st.text("Jobs applied for: " + str(len(df)))
 
 rejections = 0
 tempDf = df.loc[((df["Response?"] == "Declined"))]
@@ -28,6 +28,34 @@ ghosts = len(tempDf)
 coverLetters = 0
 tempDf = df.loc[(df["Cover Letter?"] == "Y") | (df["Cover Letter?"] == "Yes")]
 coverLetters = len(tempDf)
+
+#Make Pie chart of job types
+uniqueTypes = df["Job Type"].unique()
+uniqueCounts = []
+for jobType in uniqueTypes:
+    count = 0
+    tempDf = df.loc[(df["Job Type"] == jobType)]
+    count = len(tempDf)
+    uniqueCounts.append(count)
+for x in range(len(uniqueTypes)):
+    percent = "%.2f" % round((uniqueCounts[x] / sum(uniqueCounts)) * 100, 2)
+    match uniqueTypes[x]:
+        case "E":
+            uniqueTypes[x] = "Electrical - " + percent + "%"
+        case "Ge":
+            uniqueTypes[x] = "General Eng. - " + percent + "%"
+        case "S":
+            uniqueTypes[x] = "Software - " + percent + "%"
+        case "Mi":
+            uniqueTypes[x] = "Mining - " + percent + "%"
+        case "E/S":
+            uniqueTypes[x] = "Computer - " + percent + "%"
+
+fig1, ax1 = plt.subplots()
+ax1.pie(uniqueCounts, shadow=True)
+ax1.axis("equal")
+ax1.legend(labels=uniqueTypes)
+st.pyplot(fig1)
 
 st.text("Cover Letters sent: " + str(coverLetters))
 st.text("Times ghosted (Employer didn't respond with rejection email): " + str(ghosts))
