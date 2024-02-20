@@ -82,6 +82,18 @@ ax1.legend(labels=labels)
 st.pyplot(fig2)
 #
 
+#Employer Count
+employerCount = {}
+for ind in df.index:
+    if(df["Company"][ind] in employerCount):
+        employerCount[df["Company"][ind]] = employerCount[df["Company"][ind]] + 1
+    else:
+        employerCount[df["Company"][ind]] = 1
+temp = sorted(employerCount, key=employerCount.get, reverse=True)
+temp = temp[0:10]
+
+st.header("Most applications to one company: " + str(employerCount[temp[0]]))
+
 #Unique Employers
 uniqueEmployers = df["Company"].unique()
 st.header("Unique companies applied to: " + str(len(uniqueEmployers)))
