@@ -39,17 +39,16 @@ for jobType in uniqueTypes:
     uniqueCounts.append(count)
 for x in range(len(uniqueTypes)):
     percent = "%.2f" % round((uniqueCounts[x] / sum(uniqueCounts)) * 100, 2)
-    match uniqueTypes[x]:
-        case "E":
-            uniqueTypes[x] = "Electrical - " + percent + "%"
-        case "Ge":
-            uniqueTypes[x] = "General Eng. - " + percent + "%"
-        case "S":
-            uniqueTypes[x] = "Software - " + percent + "%"
-        case "Mi":
-            uniqueTypes[x] = "Mining - " + percent + "%"
-        case "E/S":
-            uniqueTypes[x] = "Computer - " + percent + "%"
+    if(uniqueTypes[x] == "E"):
+        uniqueTypes[x] = "Electrical - " + percent + "%"
+    elif(uniqueTypes[x] == "Ge"):
+        uniqueTypes[x] = "General Eng. - " + percent + "%"
+    elif(uniqueTypes[x] == "S"):
+        uniqueTypes[x] = "Software - " + percent + "%"
+    elif(uniqueTypes[x] == "Mi"):
+        uniqueTypes[x] = "Mining - " + percent + "%"
+    elif(uniqueTypes[x] == "E/S"):
+        uniqueTypes[x] = "Computer - " + percent + "%"
 
 fig1, ax1 = plt.subplots()
 ax1.pie(uniqueCounts, shadow=True)
