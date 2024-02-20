@@ -13,9 +13,9 @@ df = conn.read(
 #removes bad
 df = df.dropna(how="all")
 
-st.text("Welcome to my non-real engineering job application stats website!")
+st.title("Welcome to my non-real engineering job application stats website!")
 
-st.text("Jobs applied for: " + str(len(df)))
+st.header("Jobs applied for: " + str(len(df)))
 
 rejections = 0
 tempDf = df.loc[((df["Response?"] == "Declined"))]
@@ -24,6 +24,8 @@ rejections = len(tempDf)
 ghosts = 0
 tempDf = df.loc[((df["Response?"] == "Ghosted"))]
 ghosts = len(tempDf)
+
+totalDecline = ghosts + rejections
 
 coverLetters = 0
 tempDf = df.loc[(df["Cover Letter?"] == "Y") | (df["Cover Letter?"] == "Yes")]
@@ -55,11 +57,39 @@ ax1.pie(uniqueCounts, shadow=True)
 ax1.axis("equal")
 ax1.legend(labels=uniqueTypes)
 st.pyplot(fig1)
+#
 
-st.text("Cover Letters sent: " + str(coverLetters))
-st.text("Times ghosted (Employer didn't respond with rejection email): " + str(ghosts))
-st.text("Times rejected: " + str(rejections))
-st.text("Total Non-offers: " + str(rejections + ghosts))
+#Make Pie chart of Rejected, Pending, Offer
+offers = 0
+tempDf = df.loc[((df["Response?"] == "Offer"))]
+offers = len(tempDf)
+
+pending = 0
+tempDf = df.loc[(df["Response?"] != "Offer") | (df["Response?"] != "Rejected")]
+pending = len(tempDf)
+
+fig2, ax1 = plt.subplots()
+labels = ["Non-offer", "Pending", "Offer"]
+counts = [totalDecline, pending, offers]
+
+for x in range(len(labels)):
+    percent = "%.2f" % round((counts[x] / sum(counts)) * 100, 2)
+    labels[x] = labels[x] + " - " + percent + "%"
+
+ax1.pie(counts, shadow=True)
+ax1.axis("equal")
+ax1.legend(labels=labels)
+st.pyplot(fig2)
+#
+
+#Unique Employers
+uniqueEmployers = df["Company"].unique()
+st.header("Unique companies applied to: " + str(len(uniqueEmployers)))
+
+st.header("Cover Letters sent: " + str(coverLetters))
+st.header("Times ghosted (Employer didn't respond with rejection email): " + str(ghosts))
+st.header("Times rejected: " + str(rejections))
+st.header("Total Non-offers: " + str(rejections + ghosts))
 
 #Do not commit me not commented out!
 #st.dataframe(df)
