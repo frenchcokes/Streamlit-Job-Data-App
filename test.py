@@ -30,18 +30,9 @@ for ind in changeIndex:
     df.at[ind, "Date of Resp?"] = "N/A"
     df.at[ind, "isInstaDel?"] = "N/A"
 
-st.title("Welcome to my engineering job application stats website!")
-st.header("Rules")
-st.markdown(
-"""
-- Only applied to jobs I met the hard requirements for (ie schooling)
-- Only applied for positions that were or could be 4 months long in summer 2024
-- Only applied for positions based anywhere in Canada
-- Applied with a cover letter when they asked or there was an obvious spot for it
-"""
-)
-
 #Const calculations
+totalJobs = len(df)
+
 tempDf = df.loc[(df["Cover Letter?"] == "Y") | (df["Cover Letter?"] == "Yes")]
 coverLetters = len(tempDf)
 
@@ -57,6 +48,9 @@ ghosts = len(tempDf)
 numberUniqueEmployers = len(df["Company"].unique())
 
 totalDecline = ghosts + rejections
+
+daysPassed = (pd.Timestamp(todayDate) - pd.Timestamp(df["Date of App."][0])).days
+averageApplications = "%.2f" % round((totalJobs / daysPassed), 2)
 
 #Calculate number of Applicaations to each employer
 employerCount = {}
@@ -114,26 +108,57 @@ ax1.axis("equal")
 ax1.legend(labels=labels)
 
 #Website Display
-col1, col2 = st.columns(2)
+st.title("Welcome to my engineering job application stats website!")
+st.header("Rules")
+st.markdown(
+"""
+- Aimed to apply for 4 applications a day (Started on 2023-12-23)
+- Only applied to jobs I met the hard requirements for (ie schooling)
+- Only applied for positions that were or could be 4 months long in summer 2024
+- Only applied for positions based anywhere in Canada
+- Applied with a cover letter when they asked or there was an obvious spot for it
+- Data begins officially on 2023-09-20 before I set a quota for 4 a day. This is reflected in the applications per day.
+"""
+)
 
-col3, col4 = st.columns(2)
+st.header("Applications")
+col1, col2, col3 = st.columns([2,1,1])
+st.header("Results")
+col4, col5, col6 = st.columns([1,1,2])
 
 with col1:
+    st.subheader("Types of Jobs Applied to")
     st.pyplot(jobTypes)
 
 with col2:
-    st.header("Applications")
-    st.text("Jobs applied for: " + str(len(df)))
-    st.text("Cover Letters sent: " + str(coverLetters))
-    st.text("Hiring accounts made: " + str(accountsMade))
-    st.text("Most applications to one company: " + str(employerCount[temp[0]]))
-    st.text("Unique companies applied to: " + str(numberUniqueEmployers))
+    st.metric("Total Applications", (totalJobs))
+    st.metric("Hiring Accounts Made", (accountsMade))
+    st.metric("Applications per Day", averageApplications )
 
 with col3:
-    st.header("Results")
-    st.text("Times ghosted (no rejection email): " + str(ghosts))
-    st.text("Times rejected: " + str(rejections))
-    st.text("Total Non-offers: " + str(rejections + ghosts))
+    st.metric("Cover Letters", (coverLetters))
+    st.metric("Unique Companies", (numberUniqueEmployers))
+    st.metric("Most App. to a company",(employerCount[temp[0]]))
 
 with col4:
+    st.metric("Times Ghosted", ghosts)
+    st.metric("Total Offers", str(offers))
+
+with col5:
+    st.metric("Times Rejected ", rejections)
+    st.metric("Total Non-offers", str(rejections + ghosts + cancels))
+
+with col6:
+    st.subheader("Current Status of App.")
     st.pyplot(jobOutcomes)
+
+st.header("Definitions")
+st.markdown(
+"""
+- Ghosted - When there is no response 2 weeks from the application date.
+- Rejected - Rejected.
+- Cancel - When they send a message saying they aren't hiring for the position.
+- Offer - Offer of employment.
+- Pending - When it isn't ghosted or declined.
+"""
+)
