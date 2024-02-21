@@ -12,12 +12,11 @@ df = conn.read(
     nrows=400,
 )
 
-#removes bad
+#Clean dataset
 df = df.dropna(how="all")
 df["Date of App."] = pd.to_datetime(df["Date of App."])
 df.fillna(0, inplace=True)
 df["Date of Resp?"] = pd.to_datetime(df["Date of Resp?"])
-
 
 todayDate = date.today()
 
@@ -42,38 +41,36 @@ st.markdown(
 """
 )
 
-col1, col2 = st.columns(2)
-
-coverLetters = 0
+#Const calculations
 tempDf = df.loc[(df["Cover Letter?"] == "Y") | (df["Cover Letter?"] == "Yes")]
 coverLetters = len(tempDf)
 
-accountsMade = 0
 tempDf = df.loc[(df["IsAcc?"] == "Yes") | (df["IsAcc?"] == "Y")]
-uniqueCompanyAccounts = tempDf["Company"].unique()
-accountsMade = len(uniqueCompanyAccounts)
+accountsMade = len(tempDf["Company"].unique())
 
-with col2:
-    st.header("Applications")
-    st.text("Jobs applied for: " + str(len(df)))
-    st.text("Cover Letters sent: " + str(coverLetters))
-    st.text("Hiring accounts made: " + str(accountsMade))
-
-rejections = 0
 tempDf = df.loc[((df["Response?"] == "Declined"))]
 rejections = len(tempDf)
 
-ghosts = 0
 tempDf = df.loc[((df["Response?"] == "Ghosted"))]
 ghosts = len(tempDf)
 
+numberUniqueEmployers = len(df["Company"].unique())
+
 totalDecline = ghosts + rejections
+
+#Calculate number of Applicaations to each employer
+employerCount = {}
+for ind in df.index:
+    if(df["Company"][ind] in employerCount):
+        employerCount[df["Company"][ind]] = employerCount[df["Company"][ind]] + 1
+    else:
+        employerCount[df["Company"][ind]] = 1
+temp = sorted(employerCount, key=employerCount.get, reverse=True)
 
 #Make Pie chart of job types
 uniqueTypes = df["Job Type"].unique()
 uniqueCounts = []
 for jobType in uniqueTypes:
-    count = 0
     tempDf = df.loc[(df["Job Type"] == jobType)]
     count = len(tempDf)
     uniqueCounts.append(count)
@@ -89,27 +86,19 @@ for x in range(len(uniqueTypes)):
         uniqueTypes[x] = "Mining (" + str(uniqueCounts[x]) + ") - " + percent + "%"
     elif(uniqueTypes[x] == "E/S"):
         uniqueTypes[x] = "Computer (" + str(uniqueCounts[x]) + ") - " + percent + "%"
-
-fig1, ax1 = plt.subplots()
+jobTypes, ax1 = plt.subplots()
 ax1.pie(uniqueCounts, shadow=True)
 ax1.axis("equal")
 ax1.legend(labels=uniqueTypes)
-with col1:
-    st.pyplot(fig1)
-#
 
-col3, col4 = st.columns(2)
-
-#Make Pie chart of Rejected, Pending, Offer
-offers = 0
+#Make Pie chart of job outcomes
 tempDf = df.loc[((df["Response?"] == "Offer"))]
 offers = len(tempDf)
 
-pending = 0
 tempDf = df.loc[((df["Response?"] != "Offer") & (df["Response?"] != "Rejected") & (df["Response?"] != "Ghosted"))]
 pending = len(tempDf)
 
-fig2, ax1 = plt.subplots()
+jobOutcomes, ax1 = plt.subplots()
 labels = ["Rejected", "Ghosted", "Pending", "Offer"]
 counts = [rejections, ghosts, pending, offers]
 
@@ -120,27 +109,22 @@ for x in range(len(labels)):
 ax1.pie(counts, shadow=True)
 ax1.axis("equal")
 ax1.legend(labels=labels)
-with col4:
-    st.pyplot(fig2)
-#
 
-#Employer Count
-employerCount = {}
-for ind in df.index:
-    if(df["Company"][ind] in employerCount):
-        employerCount[df["Company"][ind]] = employerCount[df["Company"][ind]] + 1
-    else:
-        employerCount[df["Company"][ind]] = 1
-temp = sorted(employerCount, key=employerCount.get, reverse=True)
-temp = temp[0:10]
+#Website Display
+col1, col2 = st.columns(2)
+
+col3, col4 = st.columns(2)
+
+with col1:
+    st.pyplot(jobTypes)
 
 with col2:
+    st.header("Applications")
+    st.text("Jobs applied for: " + str(len(df)))
+    st.text("Cover Letters sent: " + str(coverLetters))
+    st.text("Hiring accounts made: " + str(accountsMade))
     st.text("Most applications to one company: " + str(employerCount[temp[0]]))
-
-#Unique Employers
-uniqueEmployers = df["Company"].unique()
-with col2:
-    st.text("Unique companies applied to: " + str(len(uniqueEmployers)))
+    st.text("Unique companies applied to: " + str(numberUniqueEmployers))
 
 with col3:
     st.header("Results")
@@ -148,6 +132,5 @@ with col3:
     st.text("Times rejected: " + str(rejections))
     st.text("Total Non-offers: " + str(rejections + ghosts))
 
-#Do not commit me not commented out!
-#st.dataframe(df)
-#End do not commit
+with col4:
+    st.pyplot(jobOutcomes)
