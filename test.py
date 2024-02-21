@@ -95,12 +95,15 @@ ax1.legend(labels=uniqueTypes)
 tempDf = df.loc[((df["Response?"] == "Offer"))]
 offers = len(tempDf)
 
-tempDf = df.loc[((df["Response?"] != "Offer") & (df["Response?"] != "Rejected") & (df["Response?"] != "Ghosted"))]
+tempDf = df.loc[(df["Response?"] == "Cancelled")]
+cancels = len(tempDf)
+
+tempDf = df.loc[(df["Response?"] == 0)]
 pending = len(tempDf)
 
 jobOutcomes, ax1 = plt.subplots()
-labels = ["Rejected", "Ghosted", "Pending", "Offer"]
-counts = [rejections, ghosts, pending, offers]
+labels = ["Rejected", "Ghosted", "Cancels", "Offer", "Pending"]
+counts = [rejections, ghosts, cancels, offers, pending]
 
 for x in range(len(labels)):
     percent = "%.2f" % round((counts[x] / sum(counts)) * 100, 2)
