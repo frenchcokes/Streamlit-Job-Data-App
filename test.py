@@ -33,6 +33,8 @@ for ind in changeIndex:
 #Const calculations
 totalJobs = len(df)
 
+daysUntilSummer = (pd.Timestamp(datetime(2024,5,1)) - pd.Timestamp(todayDate)).days
+
 tempDf = df.loc[(df["Cover Letter?"] == "Y") | (df["Cover Letter?"] == "Yes")]
 coverLetters = len(tempDf)
 
@@ -115,7 +117,11 @@ ax1.legend(labels=labels)
 
 #Website Display
 st.title("Welcome to my summer 2024 job application stats website!")
-st.metric("Days of no job", daysOfNoJob)
+icol1, icol2 = st.columns([1,1])
+with icol1:
+    st.metric("Days of no job", daysOfNoJob)
+with icol2:
+    st.metric("Days until summer", daysUntilSummer)
 st.header("Rules")
 st.markdown(
 """
@@ -188,6 +194,6 @@ st.markdown(
 - Cancel - When they send a message saying they decided not to hire for the position.
 - Offer - Offer of employment.
 - Pending - When it isn't ghosted or rejected.
-- Insta-Rejection - When a rejection occurs in 0-3 BUSINESS days (different from days after sending application).
+- Insta-Rejection - When a rejection occurs in 0-3 BUSINESS days (slightly different from days after sending application).
 """
 )
