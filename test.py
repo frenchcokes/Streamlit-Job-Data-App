@@ -63,17 +63,6 @@ for ind in df.index:
         employerCount[df["Company"][ind]] = 1
 temp = sorted(employerCount, key=employerCount.get, reverse=True)
 
-#Create response time histogram
-tempDf = df.loc[(df["Response?"] == "Declined") | (df["Response?"] == "Cancelled")]
-arr = []
-for index in tempDf.index:
-    arr.append((pd.Timestamp(tempDf["Date of Resp?"][index]) - pd.Timestamp(tempDf["Date of App."][index])).days)
-responseHist, ax1 = plt.subplots()
-ax1.hist(arr, bins=15, histtype='bar', ec = "black")
-ax1.set_xlabel("Days After Sending Application")
-ax1.set_ylabel("Count")
-ax1.set_xticks(range(0, max(arr), 5))
-ax1.margins(x=0)
 
 #Make Pie chart of job types
 uniqueTypes = df["Job Type"].unique()
@@ -140,7 +129,21 @@ st.header("Applications")
 col1, col2, col3 = st.columns([2,1,1])
 
 st.header("Response Times of Employers")
+
+#Create response time histogram, this HAS to be here to work with slider
+numberOfBars = st.slider("Number of Bars", 10, 100, 50)
+tempDf = df.loc[(df["Response?"] == "Declined") | (df["Response?"] == "Cancelled")]
+arr = []
+responseHist, ax1 = plt.subplots()
+for index in tempDf.index:
+    arr.append((pd.Timestamp(tempDf["Date of Resp?"][index]) - pd.Timestamp(tempDf["Date of App."][index])).days)
+ax1.hist(arr, bins=numberOfBars, histtype='bar', ec = "black")
+ax1.set_xlabel("Days After Sending Application")
+ax1.set_ylabel("Count")
+ax1.set_xticks(range(0, max(arr), 5))
+ax1.margins(x=0)
 st.pyplot(responseHist)
+#
 
 st.header("Results")
 col4, col5, col6 = st.columns([1,1,2])
