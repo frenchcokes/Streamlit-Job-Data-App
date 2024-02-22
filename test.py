@@ -49,6 +49,8 @@ numberUniqueEmployers = len(df["Company"].unique())
 
 totalDecline = ghosts + rejections
 
+daysOfNoJob = (pd.Timestamp(todayDate) - pd.Timestamp(datetime(2023,9,20))).days
+
 daysPassed = (pd.Timestamp(todayDate) - pd.Timestamp(df["Date of App."][0])).days
 averageApplications = "%.2f" % round((totalJobs / daysPassed), 2)
 
@@ -120,7 +122,8 @@ ax1.axis("equal")
 ax1.legend(labels=labels)
 
 #Website Display
-st.title("Welcome to my engineering job application stats website!")
+st.title("Welcome to my summer 2024 job application stats website!")
+st.metric("Days of no job", daysOfNoJob)
 st.header("Rules")
 st.markdown(
 """
