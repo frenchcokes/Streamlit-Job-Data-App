@@ -54,6 +54,9 @@ daysOfNoJob = (pd.Timestamp(todayDate) - pd.Timestamp(datetime(2023,9,20))).days
 daysPassed = (pd.Timestamp(todayDate) - pd.Timestamp(df["Date of App."][0])).days
 averageApplications = "%.2f" % round((totalJobs / daysPassed), 2)
 
+tempDf = df.loc[(df["isInstaDel?"] == "Y")]
+instaRejections = len(tempDf)
+
 #Calculate number of Applicaations to each employer
 employerCount = {}
 for ind in df.index:
@@ -164,11 +167,13 @@ with col3:
 
 with col4:
     st.metric("Times Ghosted", ghosts)
-    st.metric("Total Offers", str(offers))
+    st.metric("Insta-Rejections", instaRejections)
+    st.metric("Total Interviews", 0)
 
 with col5:
     st.metric("Times Rejected ", rejections)
     st.metric("Total Non-offers", str(rejections + ghosts + cancels))
+    st.metric("Total Offers", str(offers))
 
 with col6:
     st.subheader("Current Status of App.")
@@ -180,8 +185,9 @@ st.markdown(
 - General Eng. - When a position doesn't specify what kind of engineering and it isn't obvious.
 - Ghosted - When there is no response 2 weeks from the application date.
 - Rejected - Rejected.
-- Cancel - When they send a message saying they aren't hiring for the position.
+- Cancel - When they send a message saying they decided not to hire for the position.
 - Offer - Offer of employment.
-- Pending - When it isn't ghosted or declined.
+- Pending - When it isn't ghosted or rejected.
+- Insta-Rejection - When a rejection occurs in 0-3 BUSINESS days (different from days after sending application).
 """
 )
