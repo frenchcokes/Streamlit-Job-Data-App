@@ -88,6 +88,8 @@ for x in range(len(uniqueTypes)):
         uniqueTypes[x] = "Mining (" + str(uniqueCounts[x]) + ") - " + percent + "%"
     elif(uniqueTypes[x] == "E/S"):
         uniqueTypes[x] = "Computer (" + str(uniqueCounts[x]) + ") - " + percent + "%"
+    elif(uniqueTypes[x] == "NE"):
+        uniqueTypes[x] = "Non-Eng. (" + str(uniqueCounts[x]) + ") - " + percent + "%"
 jobTypes, ax1 = plt.subplots()
 ax1.pie(uniqueCounts, shadow=True)
 ax1.axis("equal")
