@@ -1,0 +1,14 @@
+Symbols
+
+Job Types
+Ge = General Eng.
+E = Electrical
+S = Software
+Mi = Mining
+E/S = Computer
+NE = Non-Eng.
+
+Responses
+Declined
+Ghosted
+Cancelled
