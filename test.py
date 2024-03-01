@@ -49,7 +49,7 @@ ghosts = len(tempDf)
 
 numberUniqueEmployers = len(df["Company"].unique())
 
-interviews = df["Interviews"].sum()
+interviews = int(df["Interviews"].sum())
 
 totalDecline = ghosts + rejections
 
