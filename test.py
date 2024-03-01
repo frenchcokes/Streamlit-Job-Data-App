@@ -8,7 +8,7 @@ import numpy as np
 conn = st.connection("gsheets", type=GSheetsConnection)
 
 df = conn.read(
-    usecols=[0,1,2,3,4,5,6,7,8,9],
+    usecols=[0,1,2,3,4,5,6,7,8,9,10],
     nrows=400,
 )
 
@@ -48,6 +48,8 @@ tempDf = df.loc[((df["Response?"] == "Ghosted"))]
 ghosts = len(tempDf)
 
 numberUniqueEmployers = len(df["Company"].unique())
+
+interviews = df["Interviews"].sum()
 
 totalDecline = ghosts + rejections
 
@@ -176,7 +178,7 @@ with col3:
 with col4:
     st.metric("Times Ghosted", ghosts)
     st.metric("Insta-Rejections", instaRejections)
-    st.metric("Total Interviews", 0)
+    st.metric("Total Interviews", interviews)
 
 with col5:
     st.metric("Times Rejected ", rejections)
