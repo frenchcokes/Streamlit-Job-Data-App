@@ -97,6 +97,25 @@ ax1.pie(uniqueCounts, shadow=True)
 ax1.axis("equal")
 ax1.legend(labels=uniqueTypes)
 
+#Make Graph of Applications as a function of time
+counter = 0
+applicationCountForDaysFromStart = {}
+previous = 0
+for index, row in df.iterrows():
+    testDay = (pd.Timestamp(row["Date of App."]) - pd.Timestamp(datetime(2023,9,20))).days
+    if(testDay in applicationCountForDaysFromStart):
+        applicationCountForDaysFromStart[testDay] = applicationCountForDaysFromStart[testDay] + 1
+        previous = previous + 1
+    else:
+        applicationCountForDaysFromStart[testDay] = previous
+changeInApplications, ax1 = plt.subplots()
+ax1.plot(applicationCountForDaysFromStart.keys(), applicationCountForDaysFromStart.values())
+ax1.set_xlabel("Days")
+ax1.set_ylabel("Count")
+ax1.set_xticks(range(0, daysOfNoJob, 10))
+ax1.set_yticks(range(0, totalJobs, 20))
+ax1.margins(x=0)
+
 #Make Pie chart of job outcomes
 tempDf = df.loc[((df["Response?"] == "Offer"))]
 offers = len(tempDf)
@@ -140,6 +159,9 @@ st.markdown(
 
 st.header("Applications")
 col1, col2, col3 = st.columns([2,1,1])
+
+st.subheader("Applications over time")
+st.pyplot(changeInApplications)
 
 st.header("Response Times of Employers")
 
