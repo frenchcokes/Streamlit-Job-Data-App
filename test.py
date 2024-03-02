@@ -104,9 +104,10 @@ previous = 0
 for index, row in df.iterrows():
     testDay = (pd.Timestamp(row["Date of App."]) - pd.Timestamp(datetime(2023,9,20))).days
     if(testDay in applicationCountForDaysFromStart):
-        applicationCountForDaysFromStart[testDay] = applicationCountForDaysFromStart[testDay] + 1
         previous = previous + 1
+        applicationCountForDaysFromStart[testDay] = applicationCountForDaysFromStart[testDay] + 1
     else:
+        previous = previous + 1
         applicationCountForDaysFromStart[testDay] = previous
 changeInApplications, ax1 = plt.subplots()
 ax1.plot(applicationCountForDaysFromStart.keys(), applicationCountForDaysFromStart.values())
@@ -114,6 +115,7 @@ ax1.set_xlabel("Days")
 ax1.set_ylabel("Count")
 ax1.set_xticks(range(0, daysOfNoJob, 10))
 ax1.set_yticks(range(0, totalJobs, 20))
+ax1.grid(True)
 ax1.margins(x=0)
 
 #Make Pie chart of job outcomes
@@ -177,6 +179,7 @@ ax1.set_xlabel("Days After Sending Application")
 ax1.set_ylabel("Count")
 ax1.set_xticks(range(0, max(arr), 5))
 ax1.margins(x=0)
+ax1.grid(True)
 st.pyplot(responseHist)
 #
 
