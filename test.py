@@ -115,6 +115,7 @@ ax1.set_xlabel("Days")
 ax1.set_ylabel("Count")
 ax1.set_xticks(range(0, daysOfNoJob, 10))
 ax1.set_yticks(range(0, totalJobs, 20))
+ax1.set_title("Applications Over Time")
 ax1.grid(True)
 ax1.margins(x=0)
 
@@ -162,13 +163,10 @@ st.markdown(
 st.header("Applications")
 col1, col2, col3 = st.columns([2,1,1])
 
-st.subheader("Applications over time")
 st.pyplot(changeInApplications)
 
-st.header("Response Times of Employers")
-
 #Create response time histogram, this HAS to be here to work with slider
-numberOfBars = st.slider("Number of Bars", 10, 100, 50)
+numberOfBars = st.slider("Number of Bars for Response Time Graph", 10, 100, 50)
 tempDf = df.loc[(df["Response?"] == "Declined") | (df["Response?"] == "Cancelled")]
 arr = []
 responseHist, ax1 = plt.subplots()
@@ -178,8 +176,8 @@ ax1.hist(arr, bins=numberOfBars, histtype='bar', ec = "black")
 ax1.set_xlabel("Days After Sending Application")
 ax1.set_ylabel("Count")
 ax1.set_xticks(range(0, max(arr), 5))
+ax1.set_title("Response Times of Employers From Application Date")
 ax1.margins(x=0)
-ax1.grid(True)
 st.pyplot(responseHist)
 #
 
@@ -211,7 +209,7 @@ with col5:
     st.metric("Total Offers", str(offers))
 
 with col6:
-    st.subheader("Current Status of App.")
+    st.subheader("Responses of Applications")
     st.pyplot(jobOutcomes)
 
 st.header("Definitions")
