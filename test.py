@@ -179,6 +179,10 @@ ax1.set_xticks(range(0, max(arr), 5))
 ax1.set_title("Response Times of Employers From Application Date")
 ax1.margins(x=0)
 st.pyplot(responseHist)
+
+averageResponseTime = sum(arr) / len(arr)
+averageResponseTime = ".2f" % round(averageResponseTime, 2)
+st.metric("Average time of response: ", averageResponseTime)
 #
 
 st.header("Results")

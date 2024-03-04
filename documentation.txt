@@ -12,3 +12,4 @@ Responses
 Declined
 Ghosted
 Cancelled
+Offer
