@@ -181,7 +181,7 @@ ax1.margins(x=0)
 st.pyplot(responseHist)
 
 averageResponseTime = sum(arr) / len(arr)
-averageResponseTime = ".2f" % round(averageResponseTime, 2)
+averageResponseTime = '{0:.2f}'.format(round(averageResponseTime, 2))
 st.metric("Average time of response: ", averageResponseTime)
 #
 
