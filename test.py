@@ -63,7 +63,7 @@ averageApplications = "%.2f" % round((totalJobs / daysPassed), 2)
 tempDf = df.loc[(df["isInstaDel?"] == "Y")]
 instaRejections = len(tempDf)
 
-#Calculate number of Applicaations to each employer
+#Calculate number of Applications to each employer
 employerCount = {}
 for ind in df.index:
     if(df["Company"][ind] in employerCount):
@@ -170,21 +170,21 @@ st.pyplot(changeInApplications)
 #Create response time histogram, this HAS to be here to work with slider
 numberOfBars = st.slider("Number of Bars for Response Time Graph", 10, 100, 50)
 tempDf = df.loc[(df["Response?"] == "Declined") | (df["Response?"] == "Cancelled")]
-arr = []
+responseTimes = []
 responseHist, ax1 = plt.subplots()
 for index in tempDf.index:
-    arr.append((pd.Timestamp(tempDf["Date of Resp?"][index]) - pd.Timestamp(tempDf["Date of App."][index])).days)
-ax1.hist(arr, bins=numberOfBars, histtype='bar', ec = "black")
+    responseTimes.append((pd.Timestamp(tempDf["Date of Resp?"][index]) - pd.Timestamp(tempDf["Date of App."][index])).days)
+ax1.hist(responseTimes, bins=numberOfBars, histtype='bar', ec = "black")
 ax1.set_xlabel("Days After Sending Application")
 ax1.set_ylabel("Count")
-ax1.set_xticks(range(0, max(arr), 5))
+ax1.set_xticks(range(0, max(responseTimes), 5))
 ax1.set_title("Response Times of Employers From Application Date")
 ax1.margins(x=0)
 st.pyplot(responseHist)
 
-averageResponseTime = sum(arr) / len(arr)
+averageResponseTime = sum(responseTimes) / len(responseTimes)
 averageResponseTime = '{0:.2f}'.format(round(averageResponseTime, 2))
-st.metric("Average time of response: ", averageResponseTime)
+st.metric("Average Days for Response: ", averageResponseTime)
 #
 
 st.header("Results")
