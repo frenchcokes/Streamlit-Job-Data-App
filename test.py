@@ -119,7 +119,7 @@ ax1.set_xticks(range(0, daysOfNoJob, 10))
 ax1.set_yticks(range(0, totalJobs, 20))
 ax1.set_title("Applications Over Time")
 ax1.grid(True)
-ax1.margins(x=0)
+ax1.margins(x=0, y=0)
 
 #Make Pie chart of job outcomes
 tempDf = df.loc[((df["Response?"] == "Offer"))]
