@@ -167,25 +167,29 @@ col1, col2, col3 = st.columns([2,1,1])
 
 st.pyplot(changeInApplications)
 
-#Create response time histogram, this HAS to be here to work with slider
-numberOfBars = st.slider("Number of Bars for Response Time Graph", 10, 100, 50)
-tempDf = df.loc[(df["Response?"] == "Declined") | (df["Response?"] == "Cancelled")]
-responseTimes = []
-responseHist, ax1 = plt.subplots()
-for index in tempDf.index:
-    responseTimes.append((pd.Timestamp(tempDf["Date of Resp?"][index]) - pd.Timestamp(tempDf["Date of App."][index])).days)
-ax1.hist(responseTimes, bins=numberOfBars, histtype='bar', ec = "black")
-ax1.set_xlabel("Days After Sending Application")
-ax1.set_ylabel("Count")
-ax1.set_xticks(range(0, max(responseTimes), 5))
-ax1.set_title("Response Times of Employers From Application Date")
-ax1.margins(x=0)
-st.pyplot(responseHist)
+@staticmethod
+def plot():
+    #Create response time histogram, this HAS to be here to work with slider
+    numberOfBars = st.slider("Number of Bars for Response Time Graph", 10, 100, 50)
+    tempDf = df.loc[(df["Response?"] == "Declined") | (df["Response?"] == "Cancelled")]
+    responseTimes = []
+    responseHist, ax1 = plt.subplots()
+    for index in tempDf.index:
+        responseTimes.append((pd.Timestamp(tempDf["Date of Resp?"][index]) - pd.Timestamp(tempDf["Date of App."][index])).days)
+    ax1.hist(responseTimes, bins=numberOfBars, histtype='bar', ec = "black")
+    ax1.set_xlabel("Days After Sending Application")
+    ax1.set_ylabel("Count")
+    ax1.set_xticks(range(0, max(responseTimes), 5))
+    ax1.set_title("Response Times of Employers From Application Date")
+    ax1.margins(x=0)
+    st.pyplot(responseHist)
 
-averageResponseTime = sum(responseTimes) / len(responseTimes)
-averageResponseTime = '{0:.2f}'.format(round(averageResponseTime, 2))
-st.metric("Average Days for Response: ", averageResponseTime)
-#
+    averageResponseTime = sum(responseTimes) / len(responseTimes)
+    averageResponseTime = '{0:.2f}'.format(round(averageResponseTime, 2))
+    st.metric("Average Days for Response: ", averageResponseTime)
+    #
+
+plot()
 
 st.header("Results")
 col4, col5, col6 = st.columns([1,1,2])

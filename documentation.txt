@@ -13,3 +13,4 @@ Declined
 Ghosted
 Cancelled
 Offer
+
