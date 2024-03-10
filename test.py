@@ -63,65 +63,6 @@ averageApplications = "%.2f" % round((totalJobs / daysPassed), 2)
 tempDf = df.loc[(df["isInstaDel?"] == "Y")]
 instaRejections = len(tempDf)
 
-#Calculate number of Applications to each employer
-employerCount = {}
-for ind in df.index:
-    if(df["Company"][ind] in employerCount):
-        employerCount[df["Company"][ind]] = employerCount[df["Company"][ind]] + 1
-    else:
-        employerCount[df["Company"][ind]] = 1
-temp = sorted(employerCount, key=employerCount.get, reverse=True)
-
-
-#Make Pie chart of job types
-uniqueTypes = df["Job Type"].unique()
-uniqueCounts = []
-for jobType in uniqueTypes:
-    tempDf = df.loc[(df["Job Type"] == jobType)]
-    count = len(tempDf)
-    uniqueCounts.append(count)
-for x in range(len(uniqueTypes)):
-    percent = "%.2f" % round((uniqueCounts[x] / sum(uniqueCounts)) * 100, 2)
-    if(uniqueTypes[x] == "E"):
-        uniqueTypes[x] = "Electrical (" + str(uniqueCounts[x]) + ") - " + percent + "%"
-    elif(uniqueTypes[x] == "Ge"):
-        uniqueTypes[x] = "General Eng. (" + str(uniqueCounts[x]) + ") - " + percent + "%"
-    elif(uniqueTypes[x] == "S"):
-        uniqueTypes[x] = "Software (" + str(uniqueCounts[x]) + ") - " + percent + "%"
-    elif(uniqueTypes[x] == "Mi"):
-        uniqueTypes[x] = "Mining (" + str(uniqueCounts[x]) + ") - " + percent + "%"
-    elif(uniqueTypes[x] == "E/S"):
-        uniqueTypes[x] = "Computer (" + str(uniqueCounts[x]) + ") - " + percent + "%"
-    elif(uniqueTypes[x] == "NE"):
-        uniqueTypes[x] = "Non-Eng. (" + str(uniqueCounts[x]) + ") - " + percent + "%"
-jobTypes, ax1 = plt.subplots()
-ax1.pie(uniqueCounts, shadow=True)
-ax1.axis("equal")
-ax1.legend(labels=uniqueTypes)
-
-#Make Graph of Applications as a function of time
-counter = 0
-applicationCountForDaysFromStart = {}
-previous = 0
-for index, row in df.iterrows():
-    testDay = (pd.Timestamp(row["Date of App."]) - pd.Timestamp(datetime(2023,9,20))).days
-    if(testDay in applicationCountForDaysFromStart):
-        previous = previous + 1
-        applicationCountForDaysFromStart[testDay] = applicationCountForDaysFromStart[testDay] + 1
-    else:
-        previous = previous + 1
-        applicationCountForDaysFromStart[testDay] = previous
-changeInApplications, ax1 = plt.subplots()
-ax1.plot(applicationCountForDaysFromStart.keys(), applicationCountForDaysFromStart.values())
-ax1.set_xlabel("Days")
-ax1.set_ylabel("Count")
-ax1.set_xticks(range(0, daysOfNoJob, 10))
-ax1.set_yticks(range(0, totalJobs, 20))
-ax1.set_title("Applications Over Time")
-ax1.grid(True)
-ax1.margins(x=0, y=0)
-
-#Make Pie chart of job outcomes
 tempDf = df.loc[((df["Response?"] == "Offer"))]
 offers = len(tempDf)
 
@@ -131,18 +72,84 @@ cancels = len(tempDf)
 tempDf = df.loc[(df["Response?"] == 0)]
 pending = len(tempDf)
 
-jobOutcomes, ax1 = plt.subplots()
-labels = ["Rejected", "Ghosted", "Cancels", "Offer", "Pending"]
-counts = [rejections, ghosts, cancels, offers, pending]
+#Calculate number of Applications to each employer
+employerCount = {}
+for ind in df.index:
+    if(df["Company"][ind] in employerCount):
+        employerCount[df["Company"][ind]] = employerCount[df["Company"][ind]] + 1
+    else:
+        employerCount[df["Company"][ind]] = 1
+temp = sorted(employerCount, key=employerCount.get, reverse=True)
 
-for x in range(len(labels)):
-    percent = "%.2f" % round((counts[x] / sum(counts)) * 100, 2)
-    labels[x] = labels[x] + " (" + str(counts[x]) + ") - " + percent + "%"
+@st.cache_data
+def createJobTypesPie():
+    #Make Pie chart of job types
+    uniqueTypes = df["Job Type"].unique()
+    uniqueCounts = []
+    for jobType in uniqueTypes:
+        tempDf = df.loc[(df["Job Type"] == jobType)]
+        count = len(tempDf)
+        uniqueCounts.append(count)
+    for x in range(len(uniqueTypes)):
+        percent = "%.2f" % round((uniqueCounts[x] / sum(uniqueCounts)) * 100, 2)
+        if(uniqueTypes[x] == "E"):
+            uniqueTypes[x] = "Electrical (" + str(uniqueCounts[x]) + ") - " + percent + "%"
+        elif(uniqueTypes[x] == "Ge"):
+            uniqueTypes[x] = "General Eng. (" + str(uniqueCounts[x]) + ") - " + percent + "%"
+        elif(uniqueTypes[x] == "S"):
+            uniqueTypes[x] = "Software (" + str(uniqueCounts[x]) + ") - " + percent + "%"
+        elif(uniqueTypes[x] == "Mi"):
+            uniqueTypes[x] = "Mining (" + str(uniqueCounts[x]) + ") - " + percent + "%"
+        elif(uniqueTypes[x] == "E/S"):
+            uniqueTypes[x] = "Computer (" + str(uniqueCounts[x]) + ") - " + percent + "%"
+        elif(uniqueTypes[x] == "NE"):
+            uniqueTypes[x] = "Non-Eng. (" + str(uniqueCounts[x]) + ") - " + percent + "%"
+    jobTypes, ax1 = plt.subplots()
+    ax1.pie(uniqueCounts, shadow=True)
+    ax1.axis("equal")
+    ax1.legend(labels=uniqueTypes)
+    st.pyplot(jobTypes)
 
-ax1.pie(counts, shadow=True)
-ax1.axis("equal")
-ax1.legend(labels=labels)
+@st.cache_data
+def createApplicationsGraph():
+    #Make Graph of Applications as a function of time
+    counter = 0
+    applicationCountForDaysFromStart = {}
+    previous = 0
+    for index, row in df.iterrows():
+        testDay = (pd.Timestamp(row["Date of App."]) - pd.Timestamp(datetime(2023,9,20))).days
+        if(testDay in applicationCountForDaysFromStart):
+            previous = previous + 1
+            applicationCountForDaysFromStart[testDay] = applicationCountForDaysFromStart[testDay] + 1
+        else:
+            previous = previous + 1
+            applicationCountForDaysFromStart[testDay] = previous
+    changeInApplications, ax1 = plt.subplots()
+    ax1.plot(applicationCountForDaysFromStart.keys(), applicationCountForDaysFromStart.values())
+    ax1.set_xlabel("Days")
+    ax1.set_ylabel("Count")
+    ax1.set_xticks(range(0, daysOfNoJob, 10))
+    ax1.set_yticks(range(0, totalJobs, 20))
+    ax1.set_title("Applications Over Time")
+    ax1.grid(True)
+    ax1.margins(x=0, y=0)
+    st.pyplot(changeInApplications)
 
+#Make Pie chart of job outcomes
+@st.cache_data
+def createJobOutcomePie():
+    jobOutcomes, ax1 = plt.subplots()
+    labels = ["Rejected", "Ghosted", "Cancels", "Offer", "Pending"]
+    counts = [rejections, ghosts, cancels, offers, pending]
+
+    for x in range(len(labels)):
+        percent = "%.2f" % round((counts[x] / sum(counts)) * 100, 2)
+        labels[x] = labels[x] + " (" + str(counts[x]) + ") - " + percent + "%"
+
+    ax1.pie(counts, shadow=True)
+    ax1.axis("equal")
+    ax1.legend(labels=labels)
+    st.pyplot(jobOutcomes)
 
 def createResponseTimesHistogram():
     #Create response time histogram, this HAS to be here to work with slider
@@ -187,16 +194,9 @@ st.markdown(
 st.header("Applications")
 col1, col2, col3 = st.columns([2,1,1])
 
-st.pyplot(changeInApplications)
-
-createResponseTimesHistogram()
-
-st.header("Results")
-col4, col5, col6 = st.columns([1,1,2])
-
 with col1:
     st.subheader("Types of Jobs Applied to")
-    st.pyplot(jobTypes)
+    createJobTypesPie()
 
 with col2:
     st.metric("Total Applications", (totalJobs))
@@ -207,6 +207,13 @@ with col3:
     st.metric("Cover Letters", (coverLetters))
     st.metric("Unique Companies", (numberUniqueEmployers))
     st.metric("Most App. to a company",(employerCount[temp[0]]))
+
+createApplicationsGraph()
+
+createResponseTimesHistogram()
+
+st.header("Results")
+col4, col5, col6 = st.columns([1,1,2])
 
 with col4:
     st.metric("Times Ghosted", ghosts)
@@ -221,7 +228,7 @@ with col5:
 
 with col6:
     st.subheader("Responses of Applications")
-    st.pyplot(jobOutcomes)
+    createJobOutcomePie()
 
 st.header("Definitions")
 st.markdown(
