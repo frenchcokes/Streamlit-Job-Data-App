@@ -9,7 +9,7 @@ conn = st.connection("gsheets", type=GSheetsConnection)
 
 df = conn.read(
     usecols=[0,1,2,3,4,5,6,7,8,9,10,11],
-    nrows=400,
+    nrows=500,
 )
 
 #Clean dataset
