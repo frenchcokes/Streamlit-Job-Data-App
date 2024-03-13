@@ -15,8 +15,8 @@ df = conn.read(
 #Clean dataset
 df = df.dropna(how="all")
 df["Date of App."] = pd.to_datetime(df["Date of App."])
-df.fillna(0, inplace=True)
 df["Date of Resp?"] = pd.to_datetime(df["Date of Resp?"])
+df.fillna(0, inplace=True)
 
 todayDate = date.today()
 
