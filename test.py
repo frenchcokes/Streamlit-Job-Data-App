@@ -113,7 +113,6 @@ def createJobTypesPie():
 @st.cache_data
 def createApplicationsGraph():
     #Make Graph of Applications as a function of time
-    counter = 0
     applicationCountForDaysFromStart = {}
     previous = 0
     for index, row in df.iterrows():
@@ -134,6 +133,31 @@ def createApplicationsGraph():
     ax1.grid(True)
     ax1.margins(x=0, y=0)
     st.pyplot(changeInApplications)
+
+def createDeclinesGraph():
+    #Make Graph of declines over time
+    declineCountForDaysFromStart = {}
+    previous = 0
+    for index, row in df.iterrrows():
+        testDay = (pd.Timestamp(row["Date of App."]) - pd.Timestamp(datetime(2023,9,20))).days
+        if(testDay in declineCountForDaysFromStart):
+            previous = previous + 1
+            declineCountForDaysFromStart[testDay] = declineCountForDaysFromStart[testDay] + 1
+        else:
+            previous = previous + 1
+            declineCountForDaysFromStart[testDay] = previous
+    changeInDeclines, ax1 = plt.subplots()
+    ax1.plot(declineCountForDaysFromStart.keys(), declineCountForDaysFromStart.values())
+    ax1.set_xlabel("Days")
+    ax1.set_ylabel("Count")
+    ax1.set_xticks(range(0, daysOfNoJob, 10))
+    ax1.set_yticks(range(0, totalJobs, 20))
+    ax1.set_title("Decline Responses Over Time")
+    ax1.grid(True)
+    ax1.margins(x=0 y=0)
+    st.pyplot(changeInDeclines)
+    
+    pass
 
 #Make Pie chart of job outcomes
 @st.cache_data
