@@ -234,6 +234,8 @@ with col3:
 
 createApplicationsGraph()
 
+createDeclinesGraph()
+
 createResponseTimesHistogram()
 
 st.header("Results")
