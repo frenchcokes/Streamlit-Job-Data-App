@@ -154,7 +154,7 @@ def createDeclinesGraph():
     ax1.set_yticks(range(0, totalJobs, 20))
     ax1.set_title("Decline Responses Over Time")
     ax1.grid(True)
-    ax1.margins(x=0 y=0)
+    ax1.margins(x=0, y=0)
     st.pyplot(changeInDeclines)
     
     pass
