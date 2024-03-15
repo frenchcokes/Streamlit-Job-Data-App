@@ -147,6 +147,9 @@ def createDeclinesGraph():
             else:
                 previous = previous + 1
                 declineCountForDaysFromStart[testDay] = previous
+        else:
+            previous = previous + 1
+            declineCountForDaysFromStart[testDay] = previous
 
     changeInDeclines, ax1 = plt.subplots()
     ax1.plot(declineCountForDaysFromStart.keys(), declineCountForDaysFromStart.values())
@@ -158,8 +161,7 @@ def createDeclinesGraph():
     ax1.grid(True)
     ax1.margins(x=0, y=0)
     st.pyplot(changeInDeclines)
-    
-    pass
+
 
 #Make Pie chart of job outcomes
 @st.cache_data
