@@ -139,13 +139,15 @@ def createDeclinesGraph():
     declineCountForDaysFromStart = {}
     previous = 0
     for index, row in df.iterrrows():
-        testDay = (pd.Timestamp(row["Date of Resp?"]) - pd.Timestamp(datetime(2023,9,20))).days
-        if(testDay in declineCountForDaysFromStart):
-            previous = previous + 1
-            declineCountForDaysFromStart[testDay] = declineCountForDaysFromStart[testDay] + 1
-        else:
-            previous = previous + 1
-            declineCountForDaysFromStart[testDay] = previous
+        if(row["Date of Resp?"] != 0):
+            testDay = (pd.Timestamp(row["Date of Resp?"]) - pd.Timestamp(datetime(2023,9,20))).days
+            if(testDay in declineCountForDaysFromStart):
+                previous = previous + 1
+                declineCountForDaysFromStart[testDay] = declineCountForDaysFromStart[testDay] + 1
+            else:
+                previous = previous + 1
+                declineCountForDaysFromStart[testDay] = previous
+
     changeInDeclines, ax1 = plt.subplots()
     ax1.plot(declineCountForDaysFromStart.keys(), declineCountForDaysFromStart.values())
     ax1.set_xlabel("Days")
