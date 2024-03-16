@@ -137,26 +137,28 @@ def createApplicationsGraph():
 def createDeclinesGraph():
     #Make Graph of declines over time
     declineCountForDaysFromStart = {}
-    previous = 0
     for index, row in df.iterrows():
-        if(row["Date of Resp?"] != "N/A"):
+        if(row["Response?"] == "Declined"):
             testDay = (pd.Timestamp(row["Date of Resp?"]) - pd.Timestamp(datetime(2023,9,20))).days
             if(testDay in declineCountForDaysFromStart):
-                previous = previous + 1
                 declineCountForDaysFromStart[testDay] = declineCountForDaysFromStart[testDay] + 1
             else:
-                previous = previous + 1
-                declineCountForDaysFromStart[testDay] = previous
-        else:
-            previous = previous + 1
-            declineCountForDaysFromStart[testDay] = previous
+                declineCountForDaysFromStart[testDay] = 1           
+    declineCountForDaysFromStart = dict(sorted(declineCountForDaysFromStart.items()))
+
+    counter = 0
+    for key in declineCountForDaysFromStart.keys():
+        previous = declineCountForDaysFromStart[key]
+        declineCountForDaysFromStart[key] = declineCountForDaysFromStart[key] + counter
+        counter = counter + previous
+        pass
 
     changeInDeclines, ax1 = plt.subplots()
     ax1.plot(declineCountForDaysFromStart.keys(), declineCountForDaysFromStart.values())
     ax1.set_xlabel("Days")
     ax1.set_ylabel("Count")
     ax1.set_xticks(range(0, daysOfNoJob, 10))
-    ax1.set_yticks(range(0, totalJobs, 20))
+    ax1.set_yticks(range(0, 100, 10))
     ax1.set_title("Decline Responses Over Time")
     ax1.grid(True)
     ax1.margins(x=0, y=0)
