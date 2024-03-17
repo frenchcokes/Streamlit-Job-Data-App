@@ -124,12 +124,33 @@ def createApplicationsGraph():
             previous = previous + 1
             applicationCountForDaysFromStart[testDay] = previous
     changeInApplications, ax1 = plt.subplots()
-    ax1.plot(applicationCountForDaysFromStart.keys(), applicationCountForDaysFromStart.values())
+    ax1.plot(applicationCountForDaysFromStart.keys(), applicationCountForDaysFromStart.values(), label="Total Number of Applications")
+
+    declineCountForDaysFromStart = {}
+    for index, row in df.iterrows():
+        if(row["Response?"] == "Declined"):
+            testDay = (pd.Timestamp(row["Date of Resp?"]) - pd.Timestamp(datetime(2023,9,20))).days
+            if(testDay in declineCountForDaysFromStart):
+                declineCountForDaysFromStart[testDay] = declineCountForDaysFromStart[testDay] + 1
+            else:
+                declineCountForDaysFromStart[testDay] = 1           
+    declineCountForDaysFromStart = dict(sorted(declineCountForDaysFromStart.items()))
+
+    counter = 0
+    for key in declineCountForDaysFromStart.keys():
+        previous = declineCountForDaysFromStart[key]
+        declineCountForDaysFromStart[key] = declineCountForDaysFromStart[key] + counter
+        counter = counter + previous
+        pass
+
+    ax1.plot(declineCountForDaysFromStart.keys(), declineCountForDaysFromStart.values(), label="Total Number of Declines")
+
     ax1.set_xlabel("Days")
     ax1.set_ylabel("Count")
+    ax1.legend(loc ="upper left")
     ax1.set_xticks(range(0, daysOfNoJob, 10))
     ax1.set_yticks(range(0, totalJobs, 20))
-    ax1.set_title("Applications Over Time")
+    ax1.set_title("Application Totals")
     ax1.grid(True)
     ax1.margins(x=0, y=0)
     st.pyplot(changeInApplications)
@@ -181,9 +202,9 @@ def createJobOutcomePie():
     ax1.legend(labels=labels)
     st.pyplot(jobOutcomes)
 
-def createResponseTimesHistogram():
+@st.cache_data
+def createResponseTimesHistogram(numberOfBars):
     #Create response time histogram, this HAS to be here to work with slider
-    numberOfBars = st.slider("Number of Bars for Response Time Graph", 10, 100, 50)
     tempDf = df.loc[(df["Response?"] == "Declined") | (df["Response?"] == "Cancelled")]
     responseTimes = []
     responseHist, ax1 = plt.subplots()
@@ -240,9 +261,10 @@ with col3:
 
 createApplicationsGraph()
 
-createDeclinesGraph()
+#createDeclinesGraph()
 
-createResponseTimesHistogram()
+numberOfBars = st.slider("Number of Bars for Response Time Graph", 10, 100, 50)
+createResponseTimesHistogram(numberOfBars)
 
 st.header("Results")
 col4, col5, col6 = st.columns([1,1,2])
