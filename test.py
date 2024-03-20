@@ -228,7 +228,9 @@ with col3:
     st.metric("Unique Companies", (numberUniqueEmployers))
     st.metric("Most App. to a company",(employerCount[temp[0]]))
 
-createApplicationsGraph()
+isApplication = st.toggle("Toggle Applications Graph: ", value=True)
+if(isApplication):
+    createApplicationsGraph()
 
 #createDeclinesGraph()
 
