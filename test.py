@@ -211,6 +211,11 @@ st.markdown(
 """
 )
 
+st.set_page_config(
+    page_title ="Job Data 2024",
+    page_icon = ":random:",
+)
+
 st.header("Applications")
 col1, col2, col3 = st.columns([2,1,1])
 
