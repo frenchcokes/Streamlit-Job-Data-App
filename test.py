@@ -228,14 +228,16 @@ with col3:
     st.metric("Unique Companies", (numberUniqueEmployers))
     st.metric("Most App. to a company",(employerCount[temp[0]]))
 
-isApplication = st.toggle("Toggle Applications Graph: ", value=True)
+isApplication = st.toggle("Toggle Applications Graph", value=True)
 if(isApplication):
     createApplicationsGraph()
 
 #createDeclinesGraph()
 
-numberOfBars = st.slider("Number of Bars for Response Time Graph", 10, 100, 50)
-createResponseTimesHistogram(numberOfBars)
+isResponseTimes = st.toggle("Toggle Response Times", value=True)
+if(isResponseTimes):
+    numberOfBars = st.slider("Number of Bars for Response Time Graph", 10, 100, 50)
+    createResponseTimesHistogram(numberOfBars)
 
 st.header("Results")
 col4, col5, col6 = st.columns([1,1,2])
