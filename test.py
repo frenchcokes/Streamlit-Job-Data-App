@@ -5,6 +5,11 @@ from streamlit_gsheets import GSheetsConnection
 from datetime import date, timedelta, datetime
 import numpy as np
 
+st.set_page_config(
+    page_title ="Job Data 2024",
+    page_icon = ":random:",
+)
+
 conn = st.connection("gsheets", type=GSheetsConnection)
 
 df = conn.read(
@@ -23,7 +28,7 @@ todayDate = date.today()
 changeIndex = []
 for index, row in df.iterrows():
     if(pd.Timestamp(row["Date of Resp?"]) == pd.Timestamp(datetime(1970,1,1))):
-        if(pd.Timestamp(row["Date of App."] + timedelta(days=14)) <= pd.Timestamp(todayDate)):
+        if(pd.Timestamp(row["Date of App."]) + timedelta(days=14) <= pd.Timestamp(todayDate)):
                 changeIndex.append(index)
 for ind in changeIndex:
     df.at[ind, "Response?"] = "Ghosted"
@@ -209,11 +214,6 @@ st.markdown(
 - Applied with a cover letter when they asked or there was an obvious spot for it
 - Data begins officially on 2023-09-20 before I set a quota for 4 a day. This is reflected in the applications per day.
 """
-)
-
-st.set_page_config(
-    page_title ="Job Data 2024",
-    page_icon = ":random:",
 )
 
 st.header("Applications")
