@@ -7,7 +7,7 @@ import numpy as np
 
 st.set_page_config(
     page_title ="Job Data 2024",
-    page_icon = ":random:",
+    page_icon = ":cat:",
 )
 
 conn = st.connection("gsheets", type=GSheetsConnection)
