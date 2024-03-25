@@ -6,7 +6,7 @@ from datetime import date, timedelta, datetime
 import numpy as np
 
 st.set_page_config(
-    page_title ="Job Data 2024",
+    page_title ="Job Data Summer 2024",
     page_icon = ":cat:",
 )
 
