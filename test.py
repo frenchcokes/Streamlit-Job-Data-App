@@ -153,7 +153,7 @@ def createApplicationsGraph():
     ax1.set_xlabel("Days")
     ax1.set_ylabel("Count")
     ax1.legend(loc ="upper left")
-    ax1.set_xticks(range(0, daysOfNoJob, 10))
+    ax1.set_xticks(range(0, daysOfNoJob, 20))
     ax1.set_yticks(range(0, totalJobs, 20))
     ax1.set_title("Application Totals")
     ax1.grid(True)
