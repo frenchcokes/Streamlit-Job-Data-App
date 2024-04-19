@@ -1,1 +1,1 @@
-Small website built with Streamlit to display job application statistics and graphs. Available at: https://frenchcoke.streamlit.app/
+Small website built with Streamlit to display job application statistics and graphs. Automatically pulls the data from my job tracking google spreadsheets and updates real time. Available at: https://frenchcoke.streamlit.app/
