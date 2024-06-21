@@ -1,1 +1,17 @@
-Small website built with Streamlit to display job application statistics and graphs. Automatically pulls the data from my job tracking google spreadsheets and updates real time. Available at: https://frenchcoke.streamlit.app/
+# Streamlit Job Data App
+
+## Intro
+A small web app built with Streamlit.
+
+## Key Features 
+- Pulls data from my job applications google sheet.
+- Creates graphs of the data
+- Finds and display keypoints from the data.
+
+## Used Things
+### Client
+- Python
+### Deploy
+- Streamlit
+### Others
+- Google Sheets API
