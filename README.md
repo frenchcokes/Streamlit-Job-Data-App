@@ -10,7 +10,7 @@ A small web app built with Streamlit.
 
 ## Used Things
 ### Client
-- Python
+- Python (Pandas, Pyplot)
 ### Deploy
 - Streamlit
 ### Others
